@@ -2,6 +2,7 @@
 
 module Cache(
     input clk, rst,
+    input read_enable, write_enable,
     input [14:0] address,
     input [127:0] in,
     output Hit,
@@ -21,12 +22,12 @@ module Cache(
             for(i = 0; i < 1024; i = i + 1)
                 mem[i] <= 132'b0;
         end
-        else if(~Hit) mem[address[11:2]] <= {1'b1, address[14:12], in};
+        else if(write_enable) mem[address[11:2]] <= {1'b1, address[14:12], in};
     end
 
 
     always @(address, Hit) begin
-        if(Hit) begin
+        if(read_enable) begin
             case(address[1:0])
                 2'b00: outreg = mem[address[11:2]][31:0];
                 2'b01: outreg = mem[address[11:2]][63:32];
