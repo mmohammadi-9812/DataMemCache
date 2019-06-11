@@ -4,7 +4,7 @@ module DataMemory(
     output reg [31:0] out
 );
 
-    reg [32767:0] mem [0:31];
+    reg [31:0] mem [0:32767];
 
     integer i;
 
@@ -13,6 +13,10 @@ module DataMemory(
             for(i = 0; i < 32767; i++) mem[i] <= 32'b0;
         end
         else out <= mem[address];
+    end
+
+    initial begin
+        for(i = 0; i < 32767; i++) mem[i] <= i;
     end
 
 endmodule
