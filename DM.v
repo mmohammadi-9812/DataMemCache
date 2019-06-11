@@ -1,3 +1,6 @@
+`timescale 1ns/1ns
+
+
 module DataMemory(
     input clk, rst,
     input [14:0] address,
@@ -8,20 +11,20 @@ module DataMemory(
 
     integer i;
 
-    always @(posedge rst) begin
-            if (rst) begin
-                for(i = 0; i < 32767; i++) mem[i] <= 32'b0;
-            end
-    end
-
     always @(address) begin
-        else begin
+        begin
             out <= {mem[address], mem[address+1], mem[address+2], mem[address+3]};
         end
     end
 
     initial begin
-        for(i = 0; i < 32767; i++) mem[i] <= i;
+        if (rst) begin
+            for(i = 0; i < 32767; i = i + 1) mem[i] <= 32'b0;
+        end
+        else begin
+            for(i = 0; i < 32767; i = i + 1)
+                mem[i] = 2 * i;
+        end
     end
 
 endmodule

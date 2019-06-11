@@ -1,22 +1,22 @@
-module circuit(
+module Circuit(
     input clk, rst,
     input [14:0] address,
-    output [31:0] reg out
+    output reg [31:0] out
 );
 
-    wire [127:0] cache_in;
+    reg [127:0] cache_in;
 
     reg cache_hit;
 
-    reg [31:0] dm_out;
+    reg [127:0] dm_out;
 
-    Cache cahe(clk, rst, Hit, ~Hit, address, cache_in, cache_hit, out);
+    Cache cahe(clk, rst, cache_hit, ~cache_hit, address, cache_in, cache_hit, out);
 
     DataMemory DM(clk, rst, address, dm_out);
 
-    always @(Hit) begin
-        cache_in = dm_out;
-        if(~Hit) begin
+    always @(cache_hit) begin
+        if(~cache_hit) begin
+            cache_in = dm_out;
             case(address[1:0])
                 2'b00: out <= dm_out[31:0];
                 2'b01: out <= dm_out[63:32];

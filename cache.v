@@ -1,10 +1,12 @@
+`timescale 1ns/1ns
+
 module Cache(
     input clk, rst,
     input read_enable, write_enable,
     input [14:0] address,
-    input [128:0] in,
+    input [127:0] in,
     output reg Hit,
-    output [31:0] reg out
+    output reg [31:0] out
 );
 
     reg [131:0] mem [0:1023];
@@ -13,9 +15,9 @@ module Cache(
 
     always @(posedge clk, posedge rst) begin
         if(rst) begin
-            for(i = 0; i < 1023; i++) mem[i] <= 132'b0;
+            for(i = 0; i < 1023; i = i + 1) mem[i] <= 132'b0;
         end
-        if(write_enable) mem[address[11:2]] <= {1, address[14:12], in};
+        if(write_enable) mem[address[11:2]] <= {1'b1, address[14:12], in};
     end
 
 
@@ -31,8 +33,8 @@ module Cache(
     end
 
 
-initial begin
-    Hit <= (mem[address[11:2]][131] == 1 && mem[address[11:2]][130:128] == address[14:12]);
-end
+    always @(address) begin
+        Hit <= (mem[address[11:2]][131] == 1 && mem[address[11:2]][130:128] == address[14:12]);
+    end
 
 endmodule
