@@ -16,6 +16,14 @@ module circuit(
 
     always @(Hit) begin
         cache_in = dm_out;
+        if(~Hit) begin
+            case(address[1:0])
+                2'b00: out <= dm_out[31:0];
+                2'b01: out <= dm_out[63:32];
+                2'b10: out <= dm_out[95:64];
+                2'b11: out <= dm_out[127:96];
+            endcase
+        end
     end
 
 endmodule
