@@ -1,4 +1,4 @@
-module cache(
+module Cache(
     input clk, rst,
     input [14:0] address,
     input [31:0] in,
