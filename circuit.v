@@ -1,21 +1,25 @@
+`timescale 1ns/1ns
+
+
 module Circuit(
     input clk, rst,
     input [14:0] address,
+    output reg Miss,
     output reg [31:0] out
 );
 
     reg [127:0] cache_in;
 
-    reg cache_hit;
+    // reg cache_hit;
 
     reg [127:0] dm_out;
 
-    Cache cahe(clk, rst, cache_hit, ~cache_hit, address, cache_in, cache_hit, out);
+    Cache cache(clk, rst, Miss, address, cache_in, Miss, out);
 
-    DataMemory DM(clk, rst, address, dm_out);
+    DataMemory DM(address, dm_out);
 
-    always @(cache_hit) begin
-        if(~cache_hit) begin
+    always @(Miss) begin
+        if(Miss) begin
             cache_in = dm_out;
             case(address[1:0])
                 2'b00: out <= dm_out[31:0];
